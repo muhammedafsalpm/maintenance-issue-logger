@@ -1,21 +1,24 @@
-# Maintenance Issue Logger
+# Maintenance Suite | Deluxe Stays
 
-A production-ready web application for property management companies to track and manage maintenance issues.
+A production-ready, premium internal web application designed for property management teams to track, assign, and resolve maintenance issues across multiple properties.
 
 ## 🚀 Features
 
-- ✅ **Submit Issue Form** - Property, Category, Urgency, Description, Photo Upload
-- ✅ **Dashboard View** - Table with all issues, color-coded urgency and status
-- ✅ **Status Management** - Update status (Open/In Progress/Resolved) with dropdown
-- ✅ **Filter System** - Filter by Property or Urgency
-- ✅ **Auto Ticket Numbers** - Unique MNT-YYYYMMDD-XXXX format
-- ✅ **Mobile Responsive** - Works on all devices
-- ✅ **Supabase Database** - Persistent data storage
+- ✅ **Premium UI/UX** - Glassmorphism aesthetics, custom animations, and a responsive custom background.
+- ✅ **Dark/Light Mode** - Persistent `class`-based dark mode switching for optimal visibility.
+- ✅ **Real Email Integration** - Automatic SMTP confirmation emails (via Nodemailer) sent directly to users upon ticket submission.
+- ✅ **Submit Issue Form** - Property selection (Mountain Heights, Sunset Apartments, etc.), Category, Urgency level, Description, and Photo Upload handling.
+- ✅ **Dashboard View** - Dynamic table with all issues, intelligent filtering, and pulsing color-coded status/urgency badges.
+- ✅ **Status Management** - Inline dropdowns to update status (Open/In Progress/Resolved).
+- ✅ **Data Export** - One-click CSV export for offline analysis and reporting.
+- ✅ **Supabase Database** - Persistent, real-time data storage configuration.
+- ✅ **Custom Typography** - Styled seamlessly with Nunito Sans for a professional Deluxe Homes brand match.
 
 ## 📋 Requirements
 
 - Node.js 18+
 - Supabase account (free tier)
+- Gmail account with an App Password (for SMTP email sending)
 - Vercel account (for deployment)
 
 ## 🛠️ Installation
@@ -42,11 +45,20 @@ npm install
 
 ### 4. Configure environment variables
 
-Create `.env.local`:
+Create `.env.local` in the root directory:
 
 ```bash
+# Supabase Connection
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+
+# Gmail SMTP for Email Confirmations
+GMAIL_USER=your_email@gmail.com
+GMAIL_PASS=your_gmail_app_password
+
+# App Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3001
+NEXT_PUBLIC_SITE_NAME=Maintenance Suite
 ```
 
 ### 5. Run development server
@@ -55,13 +67,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 npm run dev
 ```
 
-Open http://localhost:3001
+The application is explicitly configured to boot on **Port 3001** to prevent conflicts.
+Open [http://localhost:3001](http://localhost:3001) in your browser.
 
 ## 🚀 Deployment to Vercel
 
 1. Push code to GitHub
 2. Import repository to Vercel
-3. Add environment variables
+3. Add ALL environment variables from your `.env.local` directly into the Vercel project settings.
 4. Deploy
 
 ## 📁 Project Structure
@@ -70,23 +83,27 @@ Open http://localhost:3001
 maintenance-issue-logger/
 ├── app/
 │   ├── api/
-│   │   ├── issues/route.js      # GET/POST for issues
+│   │   ├── issues/route.js        # GET/POST for issues
+│   │   ├── send-email/route.js    # POST for dynamic Nodemailer emails
 │   │   ├── update-status/route.js # PATCH for status updates
-│   │   └── upload/route.js       # File upload API
-│   ├── submit/page.js            # Submit issue form
-│   ├── layout.js                 # Root layout
-│   ├── page.js                   # Dashboard
-│   └── globals.css
+│   │   └── upload/route.js        # File upload API
+│   ├── submit/page.js             # Submit issue form
+│   ├── layout.js                  # Root layout & Nunito Sans config
+│   ├── page.js                    # Professional Dashboard
+│   └── globals.css                # Base Tailwind & custom glassmorphism Theme
 ├── components/
-│   ├── IssueTable.jsx            # Dashboard table
-│   ├── UrgencyBadge.jsx          # Color-coded urgency
-│   ├── StatusBadge.jsx           # Color-coded status
-│   └── FileUpload.jsx            # File upload component
+│   ├── DarkModeToggle.jsx         # Custom theme switcher
+│   ├── ExportCSV.jsx              # CSV Data export utility
+│   ├── IssueTable.jsx             # Dashboard table
+│   ├── UrgencyBadge.jsx           # Pulsing urgency component
+│   ├── StatusBadge.jsx            # Color-coded status component
+│   └── FileUpload.jsx             # File upload UI
 ├── lib/
-│   ├── supabase.js               # Supabase client
-│   ├── validation.js             # Form validation
-│   └── dateUtils.js              # Date utilities
-└── public/uploads/               # Uploaded files
+│   ├── supabase.js                # Supabase client
+│   ├── validation.js              # Zod/Custom Form validation
+│   └── dateUtils.js               # Date utilities
+└── public/
+    └── maintenance-bg.jpg         # Custom application background
 ```
 
 ## 📊 Database Schema
