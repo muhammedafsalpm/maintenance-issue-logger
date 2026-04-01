@@ -1,19 +1,21 @@
+'use client';
+
 export default function UrgencyBadge({ urgency }) {
-  const colors = {
-    Low: 'bg-green-100 text-green-800 border border-green-200',
-    Medium: 'bg-yellow-100 text-yellow-800 border border-yellow-200',
-    High: 'bg-red-100 text-red-800 border border-red-200'
+  const styles = {
+    Low: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20',
+    Medium: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20',
+    High: 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20'
   };
   
-  const icons = {
-    Low: '🟢',
-    Medium: '🟡',
-    High: '🔴'
+  const dotColor = {
+    Low: 'bg-green-500',
+    Medium: 'bg-amber-500',
+    High: 'bg-red-500'
   };
   
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${colors[urgency]}`}>
-      <span>{icons[urgency]}</span>
+    <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${styles[urgency]}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${dotColor[urgency]} animate-pulse`} />
       <span>{urgency}</span>
     </span>
   );

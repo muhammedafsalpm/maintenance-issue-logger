@@ -3,100 +3,92 @@
 @tailwind utilities;
 
 @layer base {
-  /* Light Mode (Default) */
   :root {
-    --background: 249, 250, 251;
-    --foreground: 17, 24, 39;
+    --background: 248, 250, 252;
+    --foreground: 30, 41, 59;
     --card: 255, 255, 255;
-    --card-foreground: 17, 24, 39;
+    --card-foreground: 30, 41, 59;
     --primary: 37, 99, 235;
-    --primary-foreground: 255, 255, 255;
-    --secondary: 243, 244, 246;
-    --secondary-foreground: 17, 24, 39;
-    --border: 229, 231, 235;
-    --input: 229, 231, 235;
+    --primary-hover: 29, 78, 216;
+    --border: 226, 232, 240;
     --ring: 37, 99, 235;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
   }
   
-  /* Dark Mode */
   .dark {
-    --background: 15, 23, 42;
-    --foreground: 248, 250, 252;
-    --card: 30, 41, 59;
-    --card-foreground: 248, 250, 252;
+    --background: 2, 6, 23;
+    --foreground: 226, 232, 240;
+    --card: 15, 23, 42;
+    --card-foreground: 226, 232, 240;
     --primary: 59, 130, 246;
-    --primary-foreground: 255, 255, 255;
-    --secondary: 51, 65, 85;
-    --secondary-foreground: 248, 250, 252;
-    --border: 51, 65, 85;
-    --input: 51, 65, 85;
+    --primary-hover: 37, 99, 235;
+    --border: 30, 41, 59;
     --ring: 59, 130, 246;
+    --glass-bg: rgba(15, 23, 42, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.05);
   }
   
   body {
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));
-    transition: background-color 0.3s ease, color 0.3s ease;
+    @apply transition-colors duration-500 overflow-x-hidden font-normal text-sm md:text-base;
+  }
+  
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/maintenance-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    opacity: 0.12;
+    filter: grayscale(0.2) blur(1px);
+    z-index: -1;
+  }
+  
+  .dark body::before {
+    opacity: 0.05;
+    filter: grayscale(1) blur(3px);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-extrabold;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply backdrop-blur-xl border-white/20 dark:border-white/5;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+  }
+  
+  .card-premium {
+    @apply rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg transition-all duration-300;
+  }
+  
+  .btn-primary {
+    @apply px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md shadow-blue-500/20 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 text-sm;
   }
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-up {
-  animation: fadeInUp 0.5s ease-out;
-}
-
-.animate-slide-in {
-  animation: slideIn 0.3s ease-out;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.dark ::-webkit-scrollbar-track {
-  background: #1e293b;
-}
-
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #475569;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  @apply bg-slate-300 dark:bg-slate-700 rounded-full border-2 border-transparent bg-clip-padding;
 }

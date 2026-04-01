@@ -55,7 +55,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 npm run dev
 ```
 
-Open http://localhost:3000
+Open http://localhost:3001
 
 ## 🚀 Deployment to Vercel
 

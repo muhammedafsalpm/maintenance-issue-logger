@@ -6,7 +6,7 @@ import IssueTable from '@/components/IssueTable';
 import DarkModeToggle from '@/components/DarkModeToggle';
 import ExportCSV from '@/components/ExportCSV';
 import Toast from '@/components/Toast';
-import { Wrench, PlusCircle, BarChart3, RefreshCw } from 'lucide-react';
+import { Wrench, PlusCircle, Clock, CheckCircle2 } from 'lucide-react';
 
 export default function Dashboard() {
   const [issues, setIssues] = useState([]);
@@ -38,7 +38,6 @@ export default function Dashboard() {
       }
     } catch (error) {
       console.error('Error fetching issues:', error);
-      showToast('Failed to load issues', 'error');
     } finally {
       setLoading(false);
     }
@@ -58,11 +57,11 @@ export default function Dashboard() {
       
       if (response.ok) {
         fetchIssues();
-        showToast(`Status updated to ${newStatus}`, 'success');
+        showToast(`Status updated to ${newStatus}`);
       }
     } catch (error) {
       console.error('Error updating status:', error);
-      showToast('Failed to update status', 'error');
+      showToast('Update failed', 'error');
     }
   };
 
@@ -75,88 +74,73 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    <div className="min-h-screen transition-all duration-500 pb-20">
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900 text-white shadow-md">
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          <div className="flex justify-between items-center flex-wrap gap-4">
+      <div className="max-w-6xl mx-auto px-4 md:px-6">
+        {/* Refined Header */}
+        <header className="py-10 md:py-12 animate-fade-up">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Wrench className="h-8 w-8" />
-                <h1 className="text-2xl font-bold">Maintenance Issue Logger</h1>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="px-2 py-0.5 bg-blue-600/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-wider rounded-full border border-blue-600/10">
+                  Property Suite
+                </span>
               </div>
-              <p className="text-blue-100 dark:text-blue-200">Track and manage property maintenance requests</p>
+              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-2">
+                Maintenance <span className="text-blue-600">Logger</span>
+              </h1>
+              <p className="text-slate-500 dark:text-slate-400 font-medium text-sm max-w-md">
+                Streamlined tracking and reporting for all Deluxe Stays properties.
+              </p>
             </div>
-            <div className="flex gap-3">
-              <ExportCSV data={issues} filename="maintenance-issues" />
-              <Link
-                href="/submit"
-                className="flex items-center gap-2 bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 px-5 py-2.5 rounded-lg font-medium hover:bg-blue-50 dark:hover:bg-gray-700 transition shadow-lg"
-              >
-                <PlusCircle className="h-5 w-5" />
-                Report New Issue
+            
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <ExportCSV data={issues} />
+              <Link href="/submit" className="btn-primary flex-1 md:flex-none">
+                <PlusCircle className="h-4 w-4" />
+                <span>New Request</span>
               </Link>
             </div>
           </div>
+        </header>
+
+        {/* Stats Grid - Smaller & Clean */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {[
+            { label: 'Active Tasks', value: stats.open, icon: Clock, color: 'blue' },
+            { label: 'In Repair', value: stats.inProgress, icon: Wrench, color: 'purple' },
+            { label: 'Completed', value: stats.resolved, icon: CheckCircle2, color: 'green' }
+          ].map((stat, i) => (
+            <div key={stat.label} className="card-premium p-6 py-8 animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">{stat.label}</h3>
+                  <p className="text-3xl font-extrabold text-slate-900 dark:text-white">{stat.value}</p>
+                </div>
+                <div className={`p-3 rounded-2xl bg-${stat.color}-500/10 text-${stat.color}-600 dark:text-${stat.color}-500`}>
+                  <stat.icon className="h-6 w-6" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
-      
-      {/* Stats Cards */}
-      <div className="max-w-6xl mx-auto px-4 -mt-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-blue-500 animate-fade-up">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">Open Issues</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.open}</p>
-              </div>
-              <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
-                <BarChart3 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-              </div>
+        
+        {/* Table Section */}
+        <div className="animate-fade-up" style={{ animationDelay: '0.3s' }}>
+          {loading ? (
+            <div className="card-premium p-20 flex flex-col items-center justify-center">
+              <div className="h-8 w-8 rounded-full border-2 border-slate-200 dark:border-slate-800 border-t-blue-600 animate-spin"></div>
             </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-purple-500 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">In Progress</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.inProgress}</p>
-              </div>
-              <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
-                <Wrench className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-green-500 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">Resolved</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.resolved}</p>
-              </div>
-              <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
-                <RefreshCw className="h-6 w-6 text-green-600 dark:text-green-400" />
-              </div>
-            </div>
-          </div>
+          ) : (
+            <IssueTable
+              issues={issues}
+              onStatusChange={handleStatusChange}
+              onFilterChange={handleFilterChange}
+              filters={filters}
+            />
+          )}
         </div>
-      </div>
-      
-      {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 pb-12">
-        {loading ? (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
-            <p className="mt-4 text-gray-500 dark:text-gray-400">Loading issues...</p>
-          </div>
-        ) : (
-          <IssueTable
-            issues={issues}
-            onStatusChange={handleStatusChange}
-            onFilterChange={handleFilterChange}
-            filters={filters}
-          />
-        )}
       </div>
       
       <DarkModeToggle />
